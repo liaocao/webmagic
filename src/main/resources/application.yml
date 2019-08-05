@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.25.128/jdspider?characterEncoding=utf-8&useSSL=false
+  jpa:
+    show-sql: true
+  jackson:
+    default-property-inclusion: non_null
+server:
+  port: 8080
+  servlet:
+    context-path: /webmagic
+#logging:
+#  pattern:
+#    console: "%d - %msg%n"
+#  path: D:\________temp\log
+#  file: D:\________temp\log\sell.log
+#  level:
+#    com.imooc.LoggerTest: debug
