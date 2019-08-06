@@ -3,7 +3,6 @@ package com.cookie.webmagic.pipeline;
 
 import com.cookie.webmagic.dataobject.News;
 import com.cookie.webmagic.repository.NewsRepository;
-import com.cookie.webmagic.service.SpiderService;
 import com.cookie.webmagic.util.DateUtil;
 import com.cookie.webmagic.util.KeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +15,14 @@ import us.codecraft.webmagic.selector.Selectable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author sky
  * @date 2019/8/5 11:27
- * 针对http://www.xmtnews.com/events布局适配
+ * 针对http://so.news.cn/#search/0/%E6%99%BA%E6%85%A7%E5%9F%8E%E5%B8%82/1/布局适配
  */
 @Component
-public class JdbcPipeline implements Pipeline {
+public class XinhuaPipeline implements Pipeline {
 
     @Autowired
     private NewsRepository newsRepository;

@@ -1,11 +1,14 @@
 package com.cookie.webmagic.service.impl;
 
+import com.cookie.webmagic.dataobject.News;
 import com.cookie.webmagic.service.SpiderService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -27,5 +30,6 @@ public class SpiderServiceImplTest {
 
     @Test
     public void spiderWisdomNews() {
+        service.spiderWisdomNews();
     }
 }
