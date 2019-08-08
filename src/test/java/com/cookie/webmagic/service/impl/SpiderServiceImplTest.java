@@ -25,6 +25,7 @@ public class SpiderServiceImplTest {
 
     @Test
     public void spiderNews() {
+        System.out.println("Thread："+Thread.currentThread().getName());
         service.spiderNews();
     }
 

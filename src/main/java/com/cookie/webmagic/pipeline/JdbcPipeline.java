@@ -32,6 +32,7 @@ public class JdbcPipeline implements Pipeline {
     @Override
     public void process(ResultItems resultItems, Task task) {
 
+        System.out.println("process Thread："+Thread.currentThread().getName());
         List<Selectable> nodes = resultItems.get("content");
 
         List<News> data = new ArrayList<>();

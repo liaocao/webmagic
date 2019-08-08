@@ -1,7 +1,10 @@
 package com.cookie.webmagic.spider;
 
-import com.cookie.webmagic.dataobject.XinhuaNews;
+import com.cookie.webmagic.constant.InternetSite;
+import com.cookie.webmagic.convert.NullStringToEmptyAdapterFactory;
+import com.cookie.webmagic.dataobject.Xinhuanews;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
 import us.codecraft.webmagic.Page;
@@ -18,7 +21,8 @@ import java.util.List;
 public class NewsSpider implements PageProcessor {
 
     private Site site = Site.me().setRetryTimes(3).setSleepTime(100)
-            .setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0")
+//            .setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0")
+            .setUserAgent("Mozilla/5.0 (Windows NT 6.1; rv:6.0.2) Gecko/20100101 Firefox/6.0.2")
             .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
             .addHeader("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3")
             .setCharset("UTF-8");;
@@ -36,25 +40,35 @@ public class NewsSpider implements PageProcessor {
     private void analysisXmt(Page page){
         //针对http://www.xmtnews.com/events布局适配
         List<Selectable> nodes = page.getHtml().xpath("//section[@class=ov]/ul[@class=pic-list]/li").nodes();
-
+        System.out.println("NewsSpider Thread："+Thread.currentThread().getName());
         page.putField("content", nodes);
     }
 
     private void analysisXinhua(Page page){
 
-//        if (page.getUrl().regex(InternetSite.LIST_API).match()) {
-//            List<String> ids = new JsonPathSelector("$.content.results[*].url").selectList(page.getRawText());
-//        List<XinhuaNews> result = new JsonPathSelector("$.content.results[*]").selectList(page.getRawText());
+        try {//每次进来之前先延迟一段时间，避免被识别为爬虫程序
+            Thread.sleep((long) Math.random() * 10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        Gson gson = new Gson();
+        Gson gson  = new GsonBuilder().registerTypeAdapterFactory(new NullStringToEmptyAdapterFactory()).create();
+
         JSONObject jsonObject = new JSONObject(page.getRawText());
 
         String results = jsonObject.getJSONObject("content").getString("results");
-        gson.fromJson(results, new TypeToken<List<XinhuaNews>>() {}.getType());
-        System.out.println("测试");
-//        } else {
-//            page.putField("title", new JsonPathSelector("$.data.title").select(page.getRawText()));
-//            page.putField("content", new JsonPathSelector("$.data.content").select(page.getRawText()));
-//        }
+        int pageCount = jsonObject.getJSONObject("content").getInt("pageCount");
+        int curPage = jsonObject.getJSONObject("content").getInt("curPage");
+        if(curPage < 20){
+            curPage++;
+            page.addTargetRequest(InternetSite.ACTIVE_LIST_API+curPage);
+        }
+        System.out.println("pageCount："+pageCount);
+        System.out.println("curPage："+curPage);
+//        results = JsonUtil.delRepeatIndexid(results);
+        List<Xinhuanews> xinhuaNewsList = gson.fromJson(results, new TypeToken<List<Xinhuanews>>() {}.getType());
+
+        page.putField("content", xinhuaNewsList);
+
     }
 }

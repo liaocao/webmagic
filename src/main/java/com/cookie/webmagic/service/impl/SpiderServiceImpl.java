@@ -10,6 +10,9 @@ import com.cookie.webmagic.spider.NewsSpider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.downloader.HttpClientDownloader;
+import us.codecraft.webmagic.proxy.Proxy;
+import us.codecraft.webmagic.proxy.SimpleProxyProvider;
 
 import java.util.List;
 
@@ -38,7 +41,14 @@ public class SpiderServiceImpl implements SpiderService {
     @Override
     public void spiderWisdomNews() {
 //        Spider.create(new NewsSpider()).addUrl("http://so.news.cn/#search/0/智慧城市/1/")
+        //设置代理池
+        HttpClientDownloader httpClientDownloader = new HttpClientDownloader();
+        httpClientDownloader.setProxyProvider(SimpleProxyProvider.from(
+                new Proxy("192.168.0.108",8888)
+                ,new Proxy("192.168.0.109",8888)));//目前没法用，待分布式部署的时候试试
+
         Spider.create(new NewsSpider()).addUrl(InternetSite.LIST_API)
+//                .setDownloader(httpClientDownloader)
                 .addPipeline(xinhuaPipeline).run();
     }
 
